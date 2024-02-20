@@ -83,6 +83,7 @@
             $url_targets = [
                 'https://lichngaytot.com/xem-ngay-tot-xau-'.$date_info['day'].'-'.$date_info['month'].'-'.$date_info['year'],
                 'https://lichvannien365.com/xem-ngay-tot-xau-ngay-'.$date_info['day'].'-'.$date_info['month'].'-'.$date_info['year'],
+                'http://xemtuong.net/xem_ngay/index.php?al=&day='.$date_info['day'].'&month='.$date_info['month'].'&year='.$date_info['year'],
             ];
             $_regexNgayThang = '/\b\d{1,2}\/\d{1,2}\/\d{4}\b/';
             foreach($url_targets as $url){
@@ -236,7 +237,28 @@
                     //     }
                     // }
                 }elseif($url_targets[1]===$url){
+
+                    $_nguHanh = ['Hành Thủy', 'Hành Hỏa', 'Hành Thổ', 'Hành Kim', 'Hành Mộc'];
+                    $_28chomsao = ['Sao Giác', 'Sao Cang', 'Sao Đê', 'Sao Phòng', 'Sao Tâm', 'Sao Vĩ', 'Sao Cơ', 'Sao Tỉnh', 'Sao Quỷ', 'Sao Liễu', 'Sao Tinh', 'Sao Trương', 'Sao Dực', 'Sao Chẩn', 'Sao Khuê', 'Sao Lâu', 'Sao Vị', 'Sao Mão', 'Sao Tất', 'Sao Chủy', 'Sao Sâm', 'Sao Đẩu', 'Sao Ngưu', 'Sao Nữ', 'Sao Hư', 'Sao Nguy', 'Sao Thất', 'Sao Bích'];
+                    $_12truc = ['Trực Kiến', 'Trực Trừ' ,'Trực Mãn' ,'Trực Bình' ,'Trực Định' ,'Trực Chấp' ,'Trực Phá' ,'Trực Nguy' ,'Trực Thành' ,'Trực Thu' ,'Trực Khai' ,'Trực Bế'];
+                    $_hoangDaohacDao = [
+                        'Ngày Thanh Long Hoàng Đạo',
+                        'Ngày Minh Đường Hoàng Đạo',
+                        'Ngày Kim Quỹ Hoàng Đạo',
+                        'Ngày Kim Đường Hoàng Đạo',
+                        'Ngày Ngọc Đường Hoàng Đạo',
+                        'Ngày Tư Mệnh Hoàng Đạo',
+                        'Ngày Bảo Quang Hoàng Đạo',
+                        'Ngày Thiên Hình Hắc Đạo',
+                        'Ngày Chu Tước Hắc Đạo',
+                        'Ngày Bạch Hổ Hắc Đạo',
+                        'Ngày Thiên lao Hắc Đạo',
+                        'Ngày Huyền Vũ Hắc Đạo',
+                        'Ngày Câu Trận Hắc Đạo',
+                    ];
                     $xpath = loadDomTarget($url);
+                    // xpath Ngũ hành nạp âm, Trực ngày, Thập nhị bát tú
+                    $_domNguhanh = $xpath->query('//*[@id="lvn-page"]/div/div/div/div[1]/div[3]/div[1]/p[2]');
                     // xpath Tiết khí
                     $_domTietkhi = $xpath->query('//*[@id="lvn-page"]/div/div/div/div[1]/div[3]/div[1]/p[3]');
                     // xpath giờ Tốt trong ngày
@@ -245,6 +267,31 @@
                     // xpath giờ Xấu trong ngày
                     $_domGioxau = $xpath->query('//*[@id="lvn-page"]/div/div/div/div[1]/div[3]/div[4]/div[2]/div[position()>1]/div[1]');
 
+                    // Tìm Ngũ hành nạp âm, Trực ngày, Thập nhị bát tú, Ngày Hoàng Đạo/Hắc Đạo
+                    foreach ($_domNguhanh as $node) {
+                        $_strContent = $node->nodeValue . "\n";
+                        foreach($_nguHanh as $item){
+                            if (strpos($_strContent, $item) !== false) {
+                                echo "<br>11. Ngũ hành nạp âm: ". $item;// Kết quả Ngũ hành nạp âm
+                            }
+                        }
+                        foreach($_12truc as $item){
+                            if (strpos($_strContent, $item) !== false) {
+                                echo "<br>18. Trực ngày: ". $item;// Kết quả Trực ngày
+                            }
+                        }
+                        foreach($_28chomsao as $item){
+                            if (strpos($_strContent, $item) !== false) {
+                                echo "<br>19. Thập nhị bát tú: ". $item;// Kết quả Thập nhị bát tú
+                            }
+                        }
+                        foreach($_hoangDaohacDao as $item){
+                            if (strpos($_strContent, $item) !== false) {
+                                echo "<br>20. Ngày Hoàng Đạo/Hắc Đạo: ". $item;// Kết quả Ngày Hoàng Đạo/Hắc Đạo
+                            }
+                        }
+                    }
+                    
                     // Tìm Tiết khí
                     foreach ($_domTietkhi as $node) {
                         $_saoxau=$node->nodeValue;
@@ -268,6 +315,18 @@
                         $_gioxau=$node->nodeValue;
                         echo $_gioxau . ", ";
                     }
+
+                }elseif($url_targets[2]===$url){
+                    $xpath = loadDomTarget($url);
+                    // xpath các ngày kỵ
+                    $_domNgayky = $xpath->query('/html/body/div[1]/div/div[1]/div[6]/table/tbody/tr[3]/td[2]');
+                    // Tìm ngày kỵ
+                    echo "<br>21. Ngày kỵ: ";
+                    foreach ($_domNgayky as $node) {
+                        $_ngayky=$node->nodeValue;
+                        echo $_ngayky;
+                    }
+                    
                 }
             }
         }
