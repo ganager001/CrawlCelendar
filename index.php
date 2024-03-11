@@ -1,4 +1,7 @@
 <?php
+    // Include thư viện PHP Simple HTML DOM Parser
+    include('simple_html_dom.php');
+    
     function getCurrentDate() {
         $current_date = array(
             'day' => date("d"), // Lấy ngày hiện tại
@@ -76,6 +79,10 @@
             'Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi',
         ];
 
+        public $_8huong = [
+            'Hướng Bắc','Hướng Nam', 'Hướng Đông', 'Hướng Tây', 'Hướng Đông Bắc', 'Hướng Đông Nam', 'Hướng Tây Nam', 'Hướng Tây Bắc',
+        ];
+
         function CrawlTarget() {
             // Gọi hàm để lấy ngày, tháng, năm hiện tại
             $date_info = getCurrentDate();
@@ -83,7 +90,7 @@
             $url_targets = [
                 'https://lichngaytot.com/xem-ngay-tot-xau-'.$date_info['day'].'-'.$date_info['month'].'-'.$date_info['year'],
                 'https://lichvannien365.com/xem-ngay-tot-xau-ngay-'.$date_info['day'].'-'.$date_info['month'].'-'.$date_info['year'],
-                'http://xemtuong.net/xem_ngay/index.php?al=&day='.$date_info['day'].'&month='.$date_info['month'].'&year='.$date_info['year'],
+                'http://xemtuong.net/xem_ngay/index.php',
             ];
             $_regexNgayThang = '/\b\d{1,2}\/\d{1,2}\/\d{4}\b/';
             foreach($url_targets as $url){
@@ -100,8 +107,14 @@
                     // xpath Sao xấu Ngọc hạp thông thư
                     $_domSaoxau = $xpath->query('//*[@id="LichNgayDetail"]/div[12]/table/tbody/tr[position() >= 2]');
 
-                    // xpath Hướng xuất hành
-                    $_domHuongxuathanh = $xpath->query('//*[@id="LichNgayDetail"]/div[15]/table/tbody/tr[position() >= 2]');
+                    // xpath Hướng xuất hành: Hướng Hỷ thần
+                    $_domHuongHyThan = $xpath->query('//*[@id="LichNgayDetail"]/div[15]/table/tbody/tr[2]/td/p/text()[1]');
+
+                    // xpath Hướng xuất hành: Hướng Tài thần
+                    $_domHuongTaiThan = $xpath->query('//*[@id="LichNgayDetail"]/div[15]/table/tbody/tr[2]/td/p/text()[2]');
+
+                    // xpath Hướng xuất hành: Hướng Hắc thần
+                    $_domHuongHacThan = $xpath->query('//*[@id="LichNgayDetail"]/div[15]/table/tbody/tr[2]/td/p/text()[3]');
 
                     // Tìm ngày dương
                     foreach ($_domDuonglich as $item) {
@@ -223,19 +236,51 @@
                             }
                         }
                     }
-                    // echo "<br>";
-                    // // Tìm Hướng xuất hành
-                    // foreach ($_domHuongxuathanh as $node) {
-                    //     $_huongxuathanh=$node->nodeValue . "\n";
-                    //     $segments = explode("-", $_huongxuathanh);
+                    echo "<br>";
+                    // Tìm Hướng xuất hành Hướng Hỷ thần                   
+                    foreach ($_domHuongHyThan as $node) {
+                        $_huongHyThan=$node->nodeValue . "\n";
+                        // Tìm vị trí của chuỗi
+                        $startPosition = strpos($_huongHyThan, ":");
+                        // Nếu tìm thấy
+                        if ($startPosition !== false) {
+                            // Lấy phần của chuỗi bắt đầu
+                            $desiredString = substr($_huongHyThan, $startPosition);
+                            // In ra kết quả
+                            echo "28. Hướng hỷ thần".$desiredString; //Kết quả Hướng Hỷ thần
+                        }
+                    }
 
-                    //     foreach ($segments as $segment) {
-                    //         $trimmedSegment = trim($segment);
-                    //         if (!empty($trimmedSegment)) {
-                    //             echo "- " . $trimmedSegment . "<br>";
-                    //         }
-                    //     }
-                    // }
+                    echo "<br>";
+                    // Tìm Hướng xuất hành Hướng Tài thần                   
+                    foreach ($_domHuongTaiThan as $node) {
+                        $_huongTaiThan=$node->nodeValue . "\n";
+                        // Tìm vị trí của chuỗi
+                        $startPosition = strpos($_huongTaiThan, ":");
+                        // Nếu tìm thấy
+                        if ($startPosition !== false) {
+                            // Lấy phần của chuỗi bắt đầu
+                            $desiredString = substr($_huongTaiThan, $startPosition);
+                            // In ra kết quả
+                            echo "29. Hướng tài thần".$desiredString; //Kết quả Hướng Tài thần
+                        }
+                    }
+
+                    echo "<br>";
+                    // Tìm Hướng xuất hành Hướng Hắc thần                   
+                    foreach ($_domHuongHacThan as $node) {
+                        $_huongHacThan=$node->nodeValue . "\n";
+                        // Tìm vị trí của chuỗi
+                        $startPosition = strpos($_huongHacThan, ":");
+                        // Nếu tìm thấy
+                        if ($startPosition !== false) {
+                            // Lấy phần của chuỗi bắt đầu
+                            $desiredString = substr($_huongHacThan, $startPosition);
+                            // In ra kết quả
+                            echo "30. Hướng hắc thần".$desiredString; //Kết quả Hướng Hắc thần
+                        }
+                    }
+                    
                 }elseif($url_targets[1]===$url){
 
                     $_nguHanh = ['Hành Thủy', 'Hành Hỏa', 'Hành Thổ', 'Hành Kim', 'Hành Mộc'];
@@ -252,7 +297,7 @@
                         'Ngày Thiên Hình Hắc Đạo',
                         'Ngày Chu Tước Hắc Đạo',
                         'Ngày Bạch Hổ Hắc Đạo',
-                        'Ngày Thiên lao Hắc Đạo',
+                        'Ngày Thiên Lao Hắc Đạo',
                         'Ngày Huyền Vũ Hắc Đạo',
                         'Ngày Câu Trận Hắc Đạo',
                     ];
@@ -266,6 +311,12 @@
                     
                     // xpath giờ Xấu trong ngày
                     $_domGioxau = $xpath->query('//*[@id="lvn-page"]/div/div/div/div[1]/div[3]/div[4]/div[2]/div[position()>1]/div[1]');
+
+                    // xpath ngày tốt xấu
+                    $_domNgayTotXau = $xpath->query('//*[@id="lvn-page"]/div/div/div/div[1]/div[3]/div[6]/div[4]/div[3]/div[2]');
+
+                    // xpath ngày xuất hành
+                    $_domNgayXuatHanh = $xpath->query('//*[@id="lvn-page"]/div/div/div/div[1]/div[3]/div[6]/div[4]/div[4]/div[2]');
 
                     // Tìm Ngũ hành nạp âm, Trực ngày, Thập nhị bát tú, Ngày Hoàng Đạo/Hắc Đạo
                     foreach ($_domNguhanh as $node) {
@@ -316,18 +367,34 @@
                         echo $_gioxau . ", ";
                     }
 
-                }elseif($url_targets[2]===$url){
-                    $xpath = loadDomTarget($url);
-                    // xpath các ngày kỵ
-                    $_domNgayky = $xpath->query('/html/body/div[1]/div/div[1]/div[6]/table/tbody/tr[3]/td[2]');
-                    // Tìm ngày kỵ
-                    echo "<br>21. Ngày kỵ: ";
-                    foreach ($_domNgayky as $node) {
-                        $_ngayky=$node->nodeValue;
-                        echo $_ngayky;
+                    // Tìm Ngày Xấu Theo Khổng Minh Lục Diệu
+                    foreach ($_domNgayTotXau as $node) {
+                        $_NgayTotXau=$node->nodeValue;
+                        // Sử dụng hàm strstr() để tìm chuỗi con trước dấu ":"
+                        $beforeColon = strstr($_NgayTotXau, ':', true);
+
+                        // Kiểm tra xem chuỗi con có được tìm thấy không
+                        if ($beforeColon !== false) {
+                            echo "<br>22. Ngày Tốt Xấu Theo Khổng Minh Lục Diệu: ".$beforeColon;
+                        }
                     }
-                    
+
+                    // Tìm Ngày Xuất Hành Theo Khổng Minh
+                    foreach ($_domNgayXuatHanh as $node) {
+                        $_NgayXuatHanh=$node->nodeValue;
+                        // Sử dụng hàm strstr() để tìm chuỗi con trước dấu ":"
+                        $beforeColon = strstr($_NgayXuatHanh, ':', true);
+
+                        // Kiểm tra xem chuỗi con có được tìm thấy không
+                        if ($beforeColon !== false) {
+                            echo "<br>23. Ngày Xuất Hành Theo Khổng Minh: ".$beforeColon;
+                        }
+                    }
+
                 }
+                // elseif($url_targets[2]===$url){
+                    
+                // }
             }
         }
     }
