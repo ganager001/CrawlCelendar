@@ -115,6 +115,9 @@
 
                     // xpath Hướng xuất hành: Hướng Hắc thần
                     $_domHuongHacThan = $xpath->query('//*[@id="LichNgayDetail"]/div[15]/table/tbody/tr[2]/td/p/text()[3]');
+                    
+                    // xpath Trạch nhật
+                    $_domTrachNhat = $xpath->query('//*[contains(text(), "Ngày:") and contains(text(), "; tức")]');
 
                     // Tìm ngày dương
                     foreach ($_domDuonglich as $item) {
@@ -207,8 +210,18 @@
                         }
                     }
 
+                    // Tìm Trạch nhật
+                    foreach ($_domTrachNhat as $node) {
+                        $_trachnhat=$node->nodeValue . "\n";
+                        $start = strpos($_trachnhat, "; tức ");
+                        $end = strpos($_trachnhat, ".", $start); // Tìm dấu chấm kết thúc câu
+
+                        $_Kqtrachnhat = substr($_trachnhat, $start + 8, $end - $start + 1);
+                        echo "12. Trạch nhật: " . $_Kqtrachnhat; //Kết quả Trạch nhật
+                    }
+
                     // Tìm Sao tốt Ngọc hạp thông thư
-                    echo "26. Sao tốt Ngọc hạp thông thư: ";
+                    echo "<br>26. Sao tốt Ngọc hạp thông thư: ";
                     foreach ($_domSaotot as $node) {
                         $_saotot=$node->nodeValue . "\n";
 
