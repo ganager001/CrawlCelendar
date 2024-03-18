@@ -1,7 +1,8 @@
 <?php
     // Include thư viện PHP Simple HTML DOM Parser
-    include('simple_html_dom.php');
-    
+    require_once 'simple_html_dom.php';
+    // require_once 'database.php';
+
     function getCurrentDate() {
         $current_date = array(
             'day' => date("d"), // Lấy ngày hiện tại
@@ -411,6 +412,36 @@
             }
         }
     }
-    $target = new Targets();
-    $target -> CrawlTarget();
+
+    function getDatesAndMonths($year) {
+        $result = array(); // Khởi tạo mảng kết quả
+        // Lặp qua từng tháng trong năm
+        for ($month = 1; $month <= 12; $month++) {
+            // Tính số ngày trong tháng
+            $numDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            // Lặp qua từng ngày trong tháng và thêm vào mảng kết quả
+            for ($day = 1; $day <= $numDays; $day++) {
+                // Tạo một mảng chứa ngày, tháng và năm và thêm vào mảng kết quả
+                $result[] = array(
+                    'day' => $day,
+                    'month' => $month,
+                    'year' => $year
+                );
+            }
+        }
+        return $result; // Trả về mảng kết quả
+    }
+    
+    // Gọi hàm để lấy tất cả các ngày và tháng trong năm 2019 và lưu vào mảng
+    $dateArray = getDatesAndMonths(2019);
+    
+    // In ra mảng kết quả
+    echo "<pre>";
+    print_r($dateArray);
+    echo "</pre>";
+
+
+    // $target = new Targets();
+    // $target -> CrawlTarget();
+    
 ?>
